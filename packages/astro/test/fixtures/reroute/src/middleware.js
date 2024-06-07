@@ -22,6 +22,10 @@ export const second = async (context, next) => {
 		if (context.url.pathname.includes('/auth/params')) {
 			return  next('/?foo=bar');
 		}
+
+		if (context.url.pathname.includes('/auth/path')) {
+			return await context.rewrite('/path/hello');
+		}
 	}
 	return next();
 };

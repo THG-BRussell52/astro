@@ -258,6 +258,13 @@ describe('Middleware', () => {
 
 		assert.match($('h1').text(), /Index/);
 	});
+
+	it('should render page with correct Atro params object after context.rewrite', async () => {
+		const html = await fixture.fetch('/auth/path').then((res) => res.text());
+		const $ = cheerioLoad(html);
+
+		assert.equal($('h1').text(), '/path/hello.astro');
+	});
 });
 
 describe('Runtime error', () => {

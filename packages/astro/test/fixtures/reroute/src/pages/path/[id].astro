@@ -1,0 +1,18 @@
+---
+
+export function getStaticPaths() {
+	return [
+		{ params: { id: 'hello' } },
+	];
+}
+
+---
+
+<html>
+<head>
+	<title>Dynamic path param {Astro.params.id}.astro</title>
+</head>
+<body>
+<h1>/path/{Astro.params.id}.astro</h1>
+</body>
+</html>

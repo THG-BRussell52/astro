@@ -46,7 +46,7 @@ export class RenderContext {
 		readonly pipeline: Pipeline,
 		public locals: App.Locals,
 		readonly middleware: MiddlewareHandler,
-		readonly pathname: string,
+		public pathname: string,
 		public request: Request,
 		public routeData: RouteData,
 		public status: number,
@@ -230,15 +230,21 @@ export class RenderContext {
 			this.routeData = routeData;
 			if (reroutePayload instanceof Request) {
 				this.request = reroutePayload;
+			} else if (reroutePayload instanceof URL) {
+				this.request = this.#copyRequest(
+					new URL(routeData.pathname ?? reroutePayload.pathname + reroutePayload.search, this.url.origin),
+					this.request
+				);
 			} else {
 				this.request = this.#copyRequest(
-					new URL(routeData.pathname ?? routeData.route, this.url.origin),
+					new URL(routeData.pathname ?? reroutePayload, this.url.origin),
 					this.request
 				);
 			}
 			this.url = new URL(this.request.url);
+			this.pathname = this.url.pathname
 			this.cookies = new AstroCookies(this.request);
-			this.params = getParams(routeData, url.toString());
+			this.params = getParams(routeData, this.pathname);
 			this.isRewriting = true;
 			return await this.render(component);
 		};
@@ -418,15 +424,21 @@ export class RenderContext {
 			this.routeData = routeData;
 			if (reroutePayload instanceof Request) {
 				this.request = reroutePayload;
+			} else if (reroutePayload instanceof URL) {
+				this.request = this.#copyRequest(
+					new URL(routeData.pathname ?? reroutePayload.pathname + reroutePayload.search, this.url.origin),
+					this.request
+				);
 			} else {
 				this.request = this.#copyRequest(
-					new URL(routeData.pathname ?? routeData.route, this.url.origin),
+					new URL(routeData.pathname ?? reroutePayload, this.url.origin),
 					this.request
 				);
 			}
 			this.url = new URL(this.request.url);
+			this.pathname = this.url.pathname
 			this.cookies = new AstroCookies(this.request);
-			this.params = getParams(routeData, url.toString());
+			this.params = getParams(routeData, this.pathname);
 			this.isRewriting = true;
 			return await this.render(component);
 		};
